@@ -60,7 +60,7 @@ u32 temp_z1=0,//左一
 		temp_Hz=0,//后中
 		temp_back_H=0	,
 		temp_back_H1=0 ,
-		THRE_VALUE =1300;
+		THRE_VALUE =1300; //！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 		
 u8  mm1,//数字红外左
 		mm2,//灰度中
@@ -113,12 +113,13 @@ int x1=0,
 		enemy_monitor=0,				//擂台上敌人监视
 		understage_enemy = 0,  //擂台下有敌人
 		circle=0,
-    attack_flag=0;         //全速攻击的标志
+    attack_flag=0,         //全速攻击的标志
+		qizi_on_off=1;         //推棋子模式开关：1为开 0为关
 
 u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_PWM=700,checkback_TIME=200;  //check参数设置
  int main(void)
  {
-	  
+	 // value[4] 左二 有问题 最大值为1400
 	delay_init();               //延时函数初始化	
   delay_ms(1000);	 
   delay_ms(1000);	 
@@ -181,7 +182,7 @@ u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_
 						
 						show();                //显示参数
 						understage_onstage_ide();//判断台上台下
-						if(location_flag==0)
+						if(location_flag==0 || qizi_on_off)
 						//if(1)
 							bianyuanshibiex();                //擂台上边缘识别
 						else
@@ -237,7 +238,7 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 														stop();
 													 }
 											else		{
-												if(attack_flag<=100) {allahead(speed_enemy);attack_flag+=1;}
+												if(attack_flag<=100 || qizi_on_off) {allahead(speed_enemy);attack_flag+=1;}
 												else allahead(1200);                                           //全速攻击
 											}
 										}
