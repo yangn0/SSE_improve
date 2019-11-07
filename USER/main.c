@@ -112,7 +112,9 @@ int x1=0,
 		up_stage_delay=0,				//上台延时标志
 		enemy_monitor=0,				//擂台上敌人监视
 		understage_enemy = 0,  //擂台下有敌人
-		circle=0;	
+		circle=0,
+    attack_flag=0;         //全速攻击的标志
+
 u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_PWM=700,checkback_TIME=200;  //check参数设置
  int main(void)
  {
@@ -130,11 +132,11 @@ u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_
 	mm_scan_GPIO_Config();     //红外对管管脚初始化（普通IO输入）	 	 
 	OLED_Clear();          //OLED 清零
 	
-	logo();
-		
-	delay_ms(1000);
-	delay_ms(1000);
-	 OLED_Clear(); 
+//	logo();
+//		
+//	delay_ms(1000);
+//	delay_ms(1000);
+//	 OLED_Clear(); 
 //	 while(1)
 //	 {
 //			ahead(500);
@@ -153,10 +155,10 @@ u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_
 			OLED_ShowString(0,0,chr4);
 	}
 	OLED_Clear();          //OLED 清零
-	back(700,700)	;
-	delay_ms(180)	; 
-	stop();
-	delay_ms(1000);
+//	back(700,700)	;
+//	delay_ms(180)	; 
+//	stop();
+//	delay_ms(1000);
 	back(speed_upstage,speed_upstage);
 	delay_ms(1000);
 	//delay_ms(300);
@@ -181,15 +183,17 @@ u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_
 						understage_onstage_ide();//判断台上台下
 						if(location_flag==0)
 						//if(1)
-							bianyuanshibiex();     //擂台上边缘识别
+							bianyuanshibiex();                //擂台上边缘识别
 						else
 							understage_move();                //擂台下识别
-						if(xj/160==1) {xj=0;}
-						set_led(xj/20+1);
-						if(mm2==0) {x1 = 1;}
-						xj++;//与LED有关
-						mm2last			 = mm2;
-						ltxback=0;
+						
+//						if(xj/160==1) {xj=0;}
+//						set_led(xj/20+1);
+//						if(mm2==0) {x1 = 1;}
+//						xj++;//与LED有关
+//						mm2last			 = mm2;
+						
+						ltxback=0;   //台下程序相关
 						
 					
 															
@@ -223,7 +227,7 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 				{	 
 								if(value[5]>THRE_VALUE||value[6]>THRE_VALUE )    // two sensor front find enemy 2  
 							{	
-								 if((mm_scan(GPIOD,GPIO_Pin_7)==1||mm_scan(GPIOD,GPIO_Pin_2)==1))  {back(500,500);backflag=1;}
+								 if((mm_scan(GPIOD,GPIO_Pin_7)==1||mm_scan(GPIOD,GPIO_Pin_2)==1))  {back(500,500);backflag=1;}   //backflag 与守台相关，backflag1 与边缘转向相关
 								 else  
 											{
 												if(backflag==1)
@@ -232,9 +236,11 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 														else 
 														stop();
 													 }
-											else		allahead(speed_enemy);
-																
+											else		{
+												if(attack_flag<=100) {allahead(speed_enemy);attack_flag+=1;}
+												else allahead(1200);                                           //全速攻击
 											}
+										}
 								backflag1=0;	
 								BUZZER(1);											
 							}
@@ -245,8 +251,8 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 				else if( value[4]>THRE_VALUE||value[3]>THRE_VALUE||value[2]>THRE_VALUE||value[0]>THRE_VALUE) //one sensor  right and right back  find enemy  and right back   2   temp_ahead_right>1500 || temp_right>1500  ||
 							{
 									left(1100);		//temp_z3~temp_z6
-									yj=0;
-								BUZZER(1);
+									yj=0;               //yj 与转向方向相关
+								  BUZZER(1);
 //									delay_ms(100);		//test								
 							}
 				else if( value[7]>THRE_VALUE||value[8]>THRE_VALUE||value[9]>THRE_VALUE||value[11]>THRE_VALUE)  //one sensor left and left back find enemy 2    temp_left>1500 ||temp_back>1500 ||
@@ -273,9 +279,8 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 													delay_ms(200);			//边缘左转										
 													backflag1=0;
 											}									
-						//		else if((hui1==0&&hui2==0&&hui3==0&&hui4==0)&&GROUP==1) ahead(500);//满电550
-									else if(mm4 == 1) ahead(350);
-									else	ahead(speed_normal);
+									else if(mm4 == 1) ahead(500);         //灰度为1，减速
+									else	{ ahead(speed_normal);attack_flag=0;}
 											BUZZER(0);
 								}							
 				
@@ -359,23 +364,23 @@ void understage_move()
 				else
 				{
 					if(value[5]>3000||value[6]>3000) back(350,350);
-					else 	right(400);
+					else 	right(400);        //非角落区域自身旋转找位置
 				}		
 			
 			if(ltxback==1||ltxback==2) zj++;
-			else zj=0;
-			if(zj>100) 
+			else zj=0;                      
+			if(zj>100)                           //多判断几次，确定在角落
 				{
 			   if(ltxback==2)
 				 {
 					 back(700,700);
 					 delay_ms(100);
-					 while(value[5]>500&&value[6]>500) right(400);
+					 while(value[5]>500&&value[6]>500) right(400); //寻找逃离角度
 					 ahead(700);
 					 delay_ms(1000);
 					 left(700);
 					 delay_ms(300);
-						zj=0;
+					 zj=0;
 				 }
 				 else if(ltxback==1)
 				 {
@@ -399,13 +404,12 @@ void understage_move()
 /*********************************************/
 void show()
 {
-    
-	
+
 		data_filter();
 //    mm1=mm_scan(GPIOD,GPIO_Pin_7);// 
 //		mm2=mm_scan(GPIOD,GPIO_Pin_6);                   
 //	 	mm3=mm_scan(GPIOD,GPIO_Pin_2);                  
-		mm4=mm_scan(GPIOD,GPIO_Pin_6);                    
+	mm4=mm_scan(GPIOD,GPIO_Pin_6);                    //灰度
 	                  
 	if(temp_z1>500)	 OLED_ShowNum(0,0,temp_z1,4,12);
 	else OLED_ShowNum(0,0,0,4,12);
@@ -415,8 +419,9 @@ void show()
 	else OLED_ShowNum(0,4,0,4,12);
 	if(temp_z4>500)	 OLED_ShowNum(0,6,temp_z4,4,12);
 	else OLED_ShowNum(0,6,0,4,12);
-//	if(temp_z5>500)   OLED_ShowNum(26,2,temp_z5,4,12);
-//	else OLED_ShowNum(26,2,0,4,12);
+  
+	OLED_ShowNum(26,2,mm4,4,12);   //改为灰度显示
+
 	if(temp_z6>500)	 OLED_ShowNum(26,4, temp_z6,4,12);
 	else OLED_ShowNum(26,4, 0,4,12);
 	if(temp_y1>500)	 OLED_ShowNum(78,0,temp_y1,4,12);
@@ -436,11 +441,11 @@ void show()
 	if(temp_back_H1>500)		OLED_ShowNum(52,6,temp_back_H1,4,12); 
 	else 	OLED_ShowNum(52,6,0,4,12); 
 		
-		set_num();
-		OLED_ShowNum(104,0,speed_normal,3,12); 
-		OLED_ShowNum(104,2,speed_enemy,3,12); 
-		OLED_ShowNum(104,4,mm_scan(GPIOD,GPIO_Pin_2),1,5); 
-		OLED_ShowNum(104,6,mm_scan(GPIOD,GPIO_Pin_7),1,5);
+//		set_num();
+//		OLED_ShowNum(104,0,speed_normal,3,12); 
+//		OLED_ShowNum(104,2,speed_enemy,3,12); 
+		OLED_ShowNum(104,4,mm_scan(GPIOD,GPIO_Pin_2),1,5); 			//左光电
+		OLED_ShowNum(104,6,mm_scan(GPIOD,GPIO_Pin_7),1,5);      //右光电
 }
 
  
@@ -693,9 +698,9 @@ void UP_stage()
 {	
 	back(speed_upstage,speed_upstage);
 	delay_ms(1000);
-	delay_ms(100);
-	right(1000);
-	delay_ms(300);
+//	delay_ms(100);
+//	right(1000);
+//	delay_ms(300);
 }
 
 void speed_init(void)

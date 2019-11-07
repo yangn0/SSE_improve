@@ -2,7 +2,7 @@
 ..\obj\buzzer.o: ..\HARDWARE\Buzzer\buzzer.h
 ..\obj\buzzer.o: ..\USER\stm32f10x.h
 ..\obj\buzzer.o: ..\CORE\core_cm3.h
-..\obj\buzzer.o: D:\Program Files (x86)\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\buzzer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\buzzer.o: ..\USER\system_stm32f10x.h
 ..\obj\buzzer.o: ..\USER\stm32f10x_conf.h
 ..\obj\buzzer.o: ..\STM32F10x_FWLib\inc\stm32f10x_adc.h

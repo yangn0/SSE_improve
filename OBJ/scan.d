@@ -2,7 +2,7 @@
 ..\obj\scan.o: ..\HARDWARE\SCAN\scan.h
 ..\obj\scan.o: ..\USER\stm32f10x.h
 ..\obj\scan.o: ..\CORE\core_cm3.h
-..\obj\scan.o: D:\Program Files (x86)\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\scan.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\scan.o: ..\USER\system_stm32f10x.h
 ..\obj\scan.o: ..\USER\stm32f10x_conf.h
 ..\obj\scan.o: ..\STM32F10x_FWLib\inc\stm32f10x_adc.h

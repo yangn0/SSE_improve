@@ -3,7 +3,7 @@
 ..\obj\move.o: ..\SYSTEM\sys\sys.h
 ..\obj\move.o: ..\USER\stm32f10x.h
 ..\obj\move.o: ..\CORE\core_cm3.h
-..\obj\move.o: D:\Program Files (x86)\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\move.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\move.o: ..\USER\system_stm32f10x.h
 ..\obj\move.o: ..\USER\stm32f10x_conf.h
 ..\obj\move.o: ..\STM32F10x_FWLib\inc\stm32f10x_adc.h
@@ -33,4 +33,4 @@
 ..\obj\move.o: ..\SYSTEM\delay\delay.h
 ..\obj\move.o: ..\HARDWARE\PWM\pwm.h
 ..\obj\move.o: ..\HARDWARE\OLED\oled.h
-..\obj\move.o: D:\Program Files (x86)\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\move.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h

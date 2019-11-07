@@ -564,12 +564,12 @@ ARM Macro Assembler    Page 9
               00000200 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
-ork --depend=..\obj\startup_stm32f10x_hd.d -o..\obj\startup_stm32f10x_hd.o -I"D
-:\Program Files (x86)\±ÈÈü\leitai\SSNKJ_¶Ô¿¹_2019.3.15\USER\RTE" -I"D:\Program 
-Files (x86)\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0" -I"D:\Program Files (x86
-)\Keil_v5\ARM\CMSIS\Include" --predefine="__UVISION_VERSION SETA 514" --predefi
-ne="STM32F10X_HD SETA 1" --list=.\startup_stm32f10x_hd.lst ..\CORE\startup_stm3
-2f10x_hd.s
+ork --depend=..\obj\startup_stm32f10x_hd.d -o..\obj\startup_stm32f10x_hd.o -I.\
+RTE\_Target_1 -IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include -IC
+:\Keil_v5\ARM\CMSIS\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0 --pr
+edefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 525" --predefine="S
+TM32F10X_HD SETA 1" --list=.\startup_stm32f10x_hd.lst ..\CORE\startup_stm32f10x
+_hd.s
 
 
 
@@ -1466,4 +1466,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 3 symbols
-425 symbols in table
+426 symbols in table
