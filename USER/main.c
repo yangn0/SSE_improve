@@ -111,7 +111,7 @@ int x1=0,
 		key_num=0,
 		up_stage_delay=0,				//上台延时标志
 		enemy_monitor=0,				//擂台上敌人监视
-		understage_enemy = 0,  //擂台下有敌人
+		understage_enemy = 0,   //擂台下有敌人
 		circle=0,
     attack_flag=0,         //全速攻击的标志
 		qizi_on_off=1;         //推棋子模式开关：1为开 0为关
@@ -179,11 +179,9 @@ u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_
 					}  
 				#else
 					{
-						
 						show();                //显示参数
 						understage_onstage_ide();//判断台上台下
 						if(location_flag==0 || qizi_on_off)
-						//if(1)
 							bianyuanshibiex();                //擂台上边缘识别
 						else
 							understage_move();                //擂台下识别
@@ -195,9 +193,6 @@ u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_
 //						mm2last			 = mm2;
 						
 						ltxback=0;   //台下程序相关
-						
-					
-															
 					}
 					#endif
 			}
@@ -226,12 +221,23 @@ void delay(int t)
 void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 {
 				{	 
-								if(value[5]>THRE_VALUE||value[6]>THRE_VALUE )    // two sensor front find enemy 2  
+						if(value[5]>THRE_VALUE||value[6]>THRE_VALUE )    // two sensor front find enemy 2  
 							{	
-								 if((mm_scan(GPIOD,GPIO_Pin_7)==1||mm_scan(GPIOD,GPIO_Pin_2)==1))  {back(500,500);backflag=1;}   //backflag 与守台相关，backflag1 与边缘转向相关
+								 if((mm_scan(GPIOD,GPIO_Pin_7)==1||mm_scan(GPIOD,GPIO_Pin_2)==1))  
+									{
+										back(500,500);backflag=1;
+										if(qizi_on_off) 
+										{
+											//推到木箱，撤离
+											back(800,800);
+											delay_ms(100);
+											right(1100);
+											delay_ms(200);
+										}
+									}   //backflag 与守台相关，backflag1 与边缘转向相关
 								 else  
 											{
-												if(backflag==1)
+												if(backflag==1 && qizi_on_off==0)
 													{
 														if(value[6]>2700||value[5]>2700) backflag=0;
 														else 
@@ -267,11 +273,13 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 								{
 									backflag=0;
 									if(backflag1==1)
-											{											
-												back(800,800);delay_ms(100);
-												if(yj==1)	
+											{
+												back(800,800);
+												delay_ms(100);
+								
+												if(yj==1 || qizi_on_off==1)	
 													{
-														 right(1100);														
+														 right(1100);
 													}
 												else 
 													{
