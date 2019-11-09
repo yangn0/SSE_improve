@@ -150,7 +150,7 @@ u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_
 	//OLED_Clear(); 
 	}
 	OLED_Clear();          //OLED 清零
-
+	
 	while(value[2]<2000)
 	{
 			OLED_ShowString(0,0,chr4);
@@ -220,19 +220,24 @@ void delay(int t)
 /**************************************************/
 void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 {
-				{	 
+	          THRE_VALUE=1000;
 						if(value[5]>THRE_VALUE||value[6]>THRE_VALUE )    // two sensor front find enemy 2  
 							{	
 								 if((mm_scan(GPIOD,GPIO_Pin_7)==1||mm_scan(GPIOD,GPIO_Pin_2)==1))  
 									{
-										back(500,500);backflag=1;
 										if(qizi_on_off) 
 										{
 											//推到木箱，撤离
-											back(800,800);
-											delay_ms(100);
-											right(1100);
+											back(500,500);
 											delay_ms(200);
+											right(1100);
+											delay_ms(300);
+											ahead(500);
+											delay_ms(200);
+										}
+										else
+										{
+											back(500,500);backflag=1;
 										}
 									}   //backflag 与守台相关，backflag1 与边缘转向相关
 								 else  
@@ -243,7 +248,8 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 														else 
 														stop();
 													 }
-											else		{
+											else		
+												{
 												if(attack_flag<=100 || qizi_on_off) {allahead(speed_enemy);attack_flag+=1;}
 												else allahead(1200);                                           //全速攻击
 											}
@@ -255,7 +261,7 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 							{
 									back(600,600);backflag1=1;xj=0;backflag=0;//
 							}			
-				else if( value[4]>THRE_VALUE||value[3]>THRE_VALUE||value[2]>THRE_VALUE||value[0]>THRE_VALUE) //one sensor  right and right back  find enemy  and right back   2   temp_ahead_right>1500 || temp_right>1500  ||
+				else if( value[4]*2>THRE_VALUE||value[3]>THRE_VALUE||value[2]>THRE_VALUE||value[0]>THRE_VALUE) //one sensor  right and right back  find enemy  and right back   2   temp_ahead_right>1500 || temp_right>1500  ||
 							{
 									left(1100);		//temp_z3~temp_z6
 									yj=0;               //yj 与转向方向相关
@@ -287,13 +293,13 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 													}
 													delay_ms(200);			//边缘左转										
 													backflag1=0;
-											}									
-									else if(mm4 == 1) ahead(500);         //灰度为1，减速
+											}
+									else if(mm4 == 1) ahead(400);         //灰度为1，减速
 									else	{ ahead(speed_normal);attack_flag=0;}
 											BUZZER(0);
 								}							
 				
-				}
+					THRE_VALUE =1300;
 }
 
 
@@ -682,11 +688,12 @@ void data_filter(void)
 	  temp_Hz=0;
 		temp_back_H=0;
 		temp_back_H1=0;
-
+		
+	  temp_z2=value[4]*4;
 		for(i=0;i<2;i++)
 				{
 					temp_z1=(value[5]>>1)+temp_z1;// 
-					temp_z2=(value[4]>>1)+temp_z2;//					
+					//temp_z2=(value[4]>>1)+temp_z2;//					
 					temp_z3=(value[3]>>1)+temp_z3;//   
 					temp_z4=(value[2]>>1)+temp_z4;//    
 					temp_z5=(value[1]>>1)+temp_z5;//     
