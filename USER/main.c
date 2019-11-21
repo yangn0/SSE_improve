@@ -114,7 +114,7 @@ int x1=0,
 		understage_enemy = 0,   //擂台下有敌人
 		circle=0,
     attack_flag=0,         //全速攻击的标志
-		qizi_on_off=1;         //推棋子模式开关：1为开 0为关
+		qizi_on_off=0;         //推棋子模式开关：1为开 0为关
 
 u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_PWM=700,checkback_TIME=200;  //check参数设置
  int main(void)
@@ -156,33 +156,32 @@ u32 check45_PWM=900,check90_PWM=900,check45_TIME=100,check90_TIME=200,checkback_
 			OLED_ShowString(0,0,chr4);
 	}
 	OLED_Clear();          //OLED 清零
-//	back(700,700)	;
-//	delay_ms(180)	; 
-//	stop();
-//	delay_ms(1000);
+
 	back(speed_upstage,speed_upstage);
-	delay_ms(1000);
-	//delay_ms(300);
-	left(1100);
-	delay_ms(300);
+  delay_ms(1000);
+  left(1100);
+  delay_ms(300);
 	while(1)
 				{
 				#if TEST==1
 					{
-				//	backST(500);
-				//backST(300);
-			//			show();
-			//			if(zhengorfan()==1) circle+=1;
-			//			else if(zhengorfan()==2) circle-=1;
-			//			//set_num();
-			//mm2last=mm2;
+			  backST(500);
+				backST(300);
+				show();
+			if(zhengorfan()==1) circle+=1;
+			else if(zhengorfan()==2) circle-=1;
+			   set_num();
+			    mm2last=mm2;
 					}  
 				#else
 					{
 						show();                //显示参数
 						understage_onstage_ide();//判断台上台下
 						if(location_flag==0 || qizi_on_off)
+						{
+							//ahead(100);
 							bianyuanshibiex();                //擂台上边缘识别
+						} 
 						else
 							understage_move();                //擂台下识别
 						
@@ -251,7 +250,7 @@ void bianyuanshibiex(void)//擂台上用定时器刷新数据，开启使能，关闭使能
 											else		
 												{
 												if(attack_flag<=100 || qizi_on_off) {allahead(speed_enemy);attack_flag+=1;}
-												else allahead(1200);                                           //全速攻击
+												else allahead(1500);                                           //全速攻击
 											}
 										}
 								backflag1=0;	
@@ -348,14 +347,14 @@ void understage_onstage_ide()
 /**************************************************/
 void understage_move()
 {		BUZZER(0);
-			if(temp_z1>(THRE_VALUE+1000)&&temp_y1>THRE_VALUE&&temp_y6>THRE_VALUE&&temp_z6>THRE_VALUE&&(temp_back_H<600&&temp_back_H1<600)&&temp_y4<THRE_VALUE&&temp_z4<THRE_VALUE&&location_flag==1)		//if(front_flag==1&&back_flag==1&&temp_Qz>1300)test
+			if(temp_z1>(THRE_VALUE+1000)&&temp_y1>THRE_VALUE&&temp_y6>THRE_VALUE&&temp_z6>THRE_VALUE&&(temp_back_H<600&&temp_back_H1<600)&&temp_y4<850&&temp_z4<850&&location_flag==1)		//if(front_flag==1&&back_flag==1&&temp_Qz>1300)test
 				{				
 						up_stage_delay += 1;
 				//		delay_ms(50);
 						if(up_stage_delay>3)		
 						{
 								ahead(500);
-								delay_ms(1700);
+								delay_ms(1000);
 //								back(600,600)	;
 //								delay_ms(180)	; 
 //								stop();
@@ -365,12 +364,12 @@ void understage_move()
 								up_stage_delay = 0;
 						}	
 				}
-				else if((temp_z1>1700||temp_y1>1700)&&temp_y3>1700&&temp_y4>1700)  
+				else if( (temp_z1>1700||temp_y1>1700)&&(temp_y3>1600) &&temp_y4>800 )
 					{
 						ahead(400);
 						ltxback=1;
 					}
-		      else if((temp_z1>1700||temp_y1>1700)&&temp_z3>1700&&temp_z4>1700)   
+		      else if((temp_z1>1700||temp_y1>1700)&&(temp_z3>1600) &&temp_z4>800)
 					{
 						ahead(400);
 						ltxback=2;
@@ -390,22 +389,22 @@ void understage_move()
 				 {
 					 back(700,700);
 					 delay_ms(100);
-					 while(value[5]>500&&value[6]>500) right(400); //寻找逃离角度
+					 while(value[5]>600&&value[6]>500) right(400); //寻找逃离角度
 					 ahead(700);
 					 delay_ms(1000);
 					 left(700);
-					 delay_ms(300);
+					 delay_ms(400);
 					 zj=0;
 				 }
 				 else if(ltxback==1)
 				 {
 					back(700,700);
 					 delay_ms(100); 
-					while(value[5]>500&&value[6]>500) left(400);
+					while(value[5]>600&&value[6]>600) left(400);
 					 ahead(700);
 					 delay_ms(1000);
 					 right(700);
-					 delay_ms(300);
+					 delay_ms(400);
 					 zj=0;
 				 }
 			 }
